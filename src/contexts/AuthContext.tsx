@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ProfileType } from '@/types/user';
+import axios from '@/lib/axiosInstance';
 
 interface User {
   id: string;
@@ -12,7 +13,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  token: string | null; // ✅ AJOUT ICI
+  token: string | null;
   login: (email: string, password: string) => Promise<boolean>;
   register: (
     email: string,
@@ -26,8 +27,8 @@ interface AuthContextType {
   hasPermission: (permission: string) => boolean;
 }
 
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
 const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
 export const useAuth = () => {
@@ -46,16 +47,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const fetchUser = async (jwtToken: string) => {
     try {
       const response = await fetch(`${BACKEND_URL}/auth/me`, {
-        headers: {
-          Authorization: `Bearer ${jwtToken}`,
-        },
+        headers: { Authorization: `Bearer ${jwtToken}` },
       });
 
       if (!response.ok) throw new Error('Impossible de récupérer le profil');
 
       const userDataFromBackend = await response.json();
       const rawProfil = userDataFromBackend.profil;
-      if (!rawProfil) throw new Error("Le profil est manquant");
+      if (!rawProfil) throw new Error('Le profil est manquant');
 
       const userData: User = {
         id: userDataFromBackend.id,
@@ -65,7 +64,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         createdAt: new Date().toISOString(),
         avatar: '',
       };
-
 
       setUser(userData);
       localStorage.setItem('plantera_user', JSON.stringify(userData));
@@ -99,7 +97,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         nom: name,
         email,
         motDePasse: password,
-        profil: profileType.toUpperCase(), // ✅ Correct (clé "profil" attendue par le backend)
+        profil: profileType.toUpperCase(),
         nomEntreprise: nomEntreprise || '',
       };
 
@@ -122,8 +120,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('plantera_token', jwtToken);
       setToken(jwtToken);
 
-      await fetchUser(jwtToken); // ✅ Appel immédiat après inscription
-
+      await fetchUser(jwtToken);
       return true;
     } catch (error) {
       console.error('Erreur d’inscription :', error);
@@ -153,8 +150,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('plantera_token', jwtToken);
       setToken(jwtToken);
 
-      await fetchUser(jwtToken); // ✅ Récupère le profil utilisateur après login
-
+      await fetchUser(jwtToken);
       return true;
     } catch (error) {
       console.error('Erreur de connexion :', error);
