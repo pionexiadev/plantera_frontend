@@ -144,11 +144,7 @@ const Login = () => {
               </p>
             </div>
 
-            <div className="mt-4 p-3 bg-primary-50/50 rounded-xl border border-primary-200/30">
-              <p className="text-xs text-plantera-slate/60 text-center">
-                <strong>Demo :</strong> Utilisez n'importe quel email et mot de passe pour vous connecter
-              </p>
-            </div>
+            
           </CardContent>
         </Card>
       </div>

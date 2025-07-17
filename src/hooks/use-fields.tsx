@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Field } from '@/types/field';
 import { ParcelleStats } from '@/types/ParcelleStats';
-import { useAuth } from '@/contexts/AuthContext'; // ✅ pour accéder au token
+import { useAuth } from '@/contexts/AuthContext'; // Pour accéder au token
 
-const API_URL = 'http://localhost:8080/api/parcelles';
+// ✅ URL du backend via .env
+const API_URL = `${import.meta.env.VITE_API_URL}/parcelles`;
 
 export function useFields() {
-  const { token } = useAuth(); // ✅ utilisation du contexte
+  const { token } = useAuth();
   const [fields, setFields] = useState<Field[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState<ParcelleStats>({
