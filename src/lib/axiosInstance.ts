@@ -2,9 +2,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: import.meta.env.PROD
-    ? 'https://plant-era-backend.onrender.com/api'
-    : 'http://localhost:8080/api',
+    baseURL: 'https://plantera-backend.onrender.com/api',
 });
 
 instance.interceptors.request.use((config) => {
